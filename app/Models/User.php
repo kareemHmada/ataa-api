@@ -24,6 +24,11 @@ class User extends Authenticatable
         'role',
     ];
 
+    public function donations()
+    {
+        return $this->hasMany(Donation::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -45,5 +50,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isDonor(): bool
+    {
+        return $this->role === 'donor';
+    }
+
+    public function isOrg(): bool
+    {
+        return $this->role === 'org';
+    }
+
+    public function isReceiver(): bool
+    {
+        return $this->role === 'receiver';
     }
 }
