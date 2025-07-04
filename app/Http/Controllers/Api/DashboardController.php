@@ -10,31 +10,56 @@ use App\Models\Donation;
 class DashboardController extends Controller
 {
        public function index(Request $request)
-    {
-        $user = $request->user();
+{
+    $user = $request->user();
 
-        if ($user->role === 'donor') {
+        if ($user->role === 'org') {
+            $stats = [
+                'total'    => Donation::count(),
+                'accepted' => Donation::where('status', 'مقبول')->count(),
+                'pending'  => Donation::where('status', 'قيد المراجعة')->count(),
+                'messages' => 3 // يمكنك تعديلها لاحقًا
+            ];
+
+            $recent = Donation::latest()->take(5)->get()->map(function ($d) {
+                return [
+                    'title'     => $d->title,
+                    'status'    => $d->status,
+                    'time_ago'  => $d->created_at->diffForHumans(),
+                ];
+            });
+
+            return response()->json([
+                'stats' => $stats,
+                'recent_donations' => $recent,
+            ]);
+        }
+
+        elseif (in_array($user->role, ['donor', 'receiver'])) {
             $donations = $user->donations()->latest()->get();
+
+            $stats = [
+                'total'       => $donations->count(),
+                'completed'   => $donations->where('status', 'مكتمل')->count(),
+                'in_progress' => $donations->where('status', '!=', 'مكتمل')->count(),
+            ];
+
+            $formatted = $donations->map(function ($d) {
+                return [
+                    'id'         => $d->id,
+                    'title'      => $d->title,
+                    'status'     => $d->status,
+                    'created_at' => $d->created_at->diffForHumans(),
+                ];
+            });
+
+            return response()->json([
+                'stats'     => $stats,
+                'donations' => $formatted,
+            ]);
         }
 
-        elseif ($user->role === 'org') {
-            $donations = Donation::where('statua', 'متاح')
-                                  ->with('user:id,name,email')
-                                  ->latest()
-                                  ->get();
-        }
+        return response()->json(['message' => 'غير مصرح'], 403);
+}
 
-        elseif ($user->role === 'receiver') {
-            $donations = Donation::where('statua', 'متاح')->latest()->get();
-        }
-
-        else {
-            return response()->json(['message' => 'غير مصرح'], 403);
-        }
-
-        return response()->json([
-            'user' => $user,
-            'dashboard' => $donations
-        ]);
-    }
 }

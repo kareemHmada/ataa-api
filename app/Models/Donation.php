@@ -10,9 +10,10 @@ class Donation extends Model
         'title',
         'date',
         'img',
-        'statua',
+        'status',
         'description',
         'category',
+         'user_id',
     ];
     
 

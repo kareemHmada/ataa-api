@@ -66,4 +66,21 @@ class User extends Authenticatable
     {
         return $this->role === 'receiver';
     }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function donationRequests()
+    {
+        return $this->hasMany(DonationRequest::class);
+    }
+
+    use Notifiable;
+
+    public function routeNotificationForFcm()
+    {
+        return $this->fcm_token;
+    }
 }
