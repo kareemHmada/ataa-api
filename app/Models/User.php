@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens; // ✅ لو بتستخدم Sanctum
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,11 +22,6 @@ class User extends Authenticatable
         'password',
         'role',
     ];
-
-    public function donations()
-    {
-        return $this->hasMany(Donation::class);
-    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -48,8 +42,13 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            // 'password' => 'hashed',
         ];
+    }
+
+    public function donations()
+    {
+        return $this->hasMany(Donation::class);
     }
 
     public function isDonor(): bool
@@ -76,8 +75,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(DonationRequest::class);
     }
-
-    use Notifiable;
 
     public function routeNotificationForFcm()
     {
