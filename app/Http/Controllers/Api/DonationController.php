@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class DonationController extends Controller
 {
-   
+
     public function index(Request $request)
     {
         $user = $request->user();
@@ -16,7 +16,7 @@ class DonationController extends Controller
         if ($user->role === 'donor') {
             $donations = Donation::where('user_id', $user->id)->latest()->get();
         } elseif ($user->role === 'org' || $user->role === 'receiver') {
-            $donations = Donation::where('statua', 'متاح')->latest()->get();
+            $donations = Donation::where('status', 'متاح')->latest()->get();
         } else {
             return response()->json(['message' => 'غير مصرح'], 403);
         }
@@ -24,7 +24,7 @@ class DonationController extends Controller
         return response()->json($donations);
     }
 
- 
+
     public function store(Request $request)
     {
         $request->validate([
@@ -32,7 +32,7 @@ class DonationController extends Controller
             'date'        => 'required|date',
             'description' => 'required|string',
             'category'    => 'required|string',
-            'statua'      => 'required|string',
+            'status'      => 'required|string',
             'img'         => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 

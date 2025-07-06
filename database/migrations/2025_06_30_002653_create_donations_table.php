@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->date('date');
             $table->string('img')->nullable();
-            $table->string('statuas');
+            $table->string('status');
             $table->text('description');
             $table->string('category');
             $table->timestamps();

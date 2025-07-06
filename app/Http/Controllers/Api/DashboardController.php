@@ -14,7 +14,7 @@ class DashboardController extends Controller
     $user = $request->user();
 
         if ($user->role === 'org') {
-            $stats = [
+            $status = [
                 'total'    => Donation::count(),
                 'accepted' => Donation::where('status', 'مقبول')->count(),
                 'pending'  => Donation::where('status', 'قيد المراجعة')->count(),
@@ -30,7 +30,7 @@ class DashboardController extends Controller
             });
 
             return response()->json([
-                'stats' => $stats,
+                'status' => $status,
                 'recent_donations' => $recent,
             ]);
         }
@@ -38,7 +38,7 @@ class DashboardController extends Controller
         elseif (in_array($user->role, ['donor', 'receiver'])) {
             $donations = $user->donations()->latest()->get();
 
-            $stats = [
+            $status = [
                 'total'       => $donations->count(),
                 'completed'   => $donations->where('status', 'مكتمل')->count(),
                 'in_progress' => $donations->where('status', '!=', 'مكتمل')->count(),
@@ -54,7 +54,7 @@ class DashboardController extends Controller
             });
 
             return response()->json([
-                'stats'     => $stats,
+                'status'     => $status,
                 'donations' => $formatted,
             ]);
         }
