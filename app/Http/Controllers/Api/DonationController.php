@@ -42,7 +42,7 @@ class DonationController extends Controller
         if ($request->hasFile('img')) {
             $file = $request->file('img');
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('public/donations', $filename);
+            $path = $file->storeAs('donations', $filename, 'public');
             $data['img'] = 'donations/' . $filename;
         }
 
