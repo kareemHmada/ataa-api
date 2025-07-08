@@ -8,22 +8,18 @@ use Illuminate\Http\Request;
 
 class DonationController extends Controller
 {
-
     public function index(Request $request)
     {
         $user = $request->user();
 
         if ($user->role === 'donor') {
             $donations = Donation::where('user_id', $user->id)->latest()->get();
-        } elseif ($user->role === 'org' || $user->role === 'receiver') {
-            $donations = Donation::where('status', 'متاح')->latest()->get();
         } else {
-            return response()->json(['message' => 'غير مصرح'], 403);
+            $donations = Donation::latest()->get();
         }
 
         return response()->json($donations);
     }
-
 
     public function store(Request $request)
     {
