@@ -8,10 +8,8 @@ use App\Models\DonationRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Notifications\DonationApprovedNotification;
 
-
 class DonationRequestController extends Controller
 {
-
     public function index(Request $request)
     {
         $query = DonationRequest::query();
@@ -28,7 +26,6 @@ class DonationRequestController extends Controller
             'data'    => $requests
         ]);
     }
-
 
     public function store(Request $request)
     {
@@ -66,7 +63,6 @@ class DonationRequestController extends Controller
         ], 201);
     }
 
-
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
@@ -77,14 +73,30 @@ class DonationRequestController extends Controller
         $donation->status = $request->status;
         $donation->save();
 
- if ($donation->status === 'Approved' && $donation->user->fcm_token) {
-    $donation->user->notify(new DonationApprovedNotification());
-}
-
+        if ($donation->status === 'Approved' && $donation->user->fcm_token) {
+            $donation->user->notify(new DonationApprovedNotification());
+        }
 
         return response()->json([
             'message' => 'Status updated successfully',
             'data'    => $donation
+        ]);
+    }
+
+    // ✅ جديد : show()
+    public function show($id)
+    {
+        $request = DonationRequest::find($id);
+
+        if (!$request) {
+            return response()->json([
+                'message' => 'Donation request not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Donation request fetched successfully',
+            'data' => $request
         ]);
     }
 }

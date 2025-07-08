@@ -11,16 +11,9 @@ use App\Http\Controllers\Api\HomeStatsController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\AdminController;
 
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-*/
-
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login',    [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profile', [AuthController::class, 'profile']);
@@ -30,38 +23,32 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
 
-
-    Route::post('/notifications/token',     [NotificationController::class, 'updateToken']);
+    Route::post('/notifications/token', [NotificationController::class, 'updateToken']);
     Route::post('/notifications/broadcast', [NotificationController::class, 'broadcastGlobal']);
 
-
-    Route::get('/donations',  [DonationController::class, 'index']);
+    Route::get('/donations', [DonationController::class, 'index']);
     Route::post('/donations', [DonationController::class, 'store']);
-
+    Route::get('/donations/{id}', [DonationController::class, 'show']); // موجود
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
-
-    Route::get('/conversations',  [MessageController::class, 'conversations']);
+    Route::get('/conversations', [MessageController::class, 'conversations']);
     Route::get('/conversations/{id}/messages', [MessageController::class, 'messages']);
     Route::post('/conversations/{id}/messages', [MessageController::class, 'send']);
 
-
-    Route::get('/donation-requests',[DonationRequestController::class, 'index']);
+    Route::get('/donation-requests', [DonationRequestController::class, 'index']);
     Route::post('/donation-requests', [DonationRequestController::class, 'store']);
-    Route::put('/donation-requests/{id}/status',[DonationRequestController::class, 'updateStatus']);
+    Route::put('/donation-requests/{id}/status', [DonationRequestController::class, 'updateStatus']);
+    Route::get('/donation-requests/{id}', [DonationRequestController::class, 'show']); // ✅ جديد
 });
-
 
 Route::get('/home-stats', [HomeStatsController::class, 'index']);
-Route::post('/contact',   [ContactController::class, 'store']);
+Route::post('/contact', [ContactController::class, 'store']);
 
 Route::prefix('mobile')->group(function () {
-    Route::get('/donations',  [DonationController::class, 'index']);
+    Route::get('/donations', [DonationController::class, 'index']);
     Route::post('/donations', [DonationController::class, 'store']);
 });
-
-
 
 Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
     Route::get('/users', [AdminController::class, 'getAllUsers']);

@@ -45,8 +45,15 @@ class DonationController extends Controller
         $donation = Donation::create($data);
 
         return response()->json([
-            'message' => 'تم إنشاء التبرع بنجاح',
+            'message'  => 'تم إنشاء التبرع بنجاح',
             'donation' => $donation
         ], 201);
+    }
+
+    // ✅ دي اللي ضفتها:
+    public function show($id)
+    {
+        $donation = Donation::findOrFail($id);
+        return response()->json($donation);
     }
 }
