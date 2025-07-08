@@ -33,7 +33,7 @@ class DonationController extends Controller
             'description' => 'required|string',
             'category'    => 'required|string',
             'status'      => 'required|string',
-            'img'         => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'img'         => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
         $data = $request->except('img');

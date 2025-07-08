@@ -11,7 +11,7 @@ use App\Notifications\DonationApprovedNotification;
 
 class DonationRequestController extends Controller
 {
-   
+
     public function index(Request $request)
     {
         $query = DonationRequest::query();
@@ -29,7 +29,7 @@ class DonationRequestController extends Controller
         ]);
     }
 
-  
+
     public function store(Request $request)
     {
         $request->validate([
@@ -39,7 +39,7 @@ class DonationRequestController extends Controller
             'description' => 'nullable|string',
             'location'    => 'nullable|string',
             'notes'       => 'nullable|string',
-            'images.*'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'images.*'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
         $data = $request->except('images');
@@ -66,7 +66,7 @@ class DonationRequestController extends Controller
         ], 201);
     }
 
- 
+
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
