@@ -50,10 +50,33 @@ class DonationController extends Controller
         ], 201);
     }
 
-    // ✅ دي اللي ضفتها:
     public function show($id)
     {
         $donation = Donation::findOrFail($id);
         return response()->json($donation);
+    }
+
+    // ✅ تغيير الحالة
+    public function changeStatus(Request $request, $id)
+    {
+        $donation = Donation::findOrFail($id);
+        $donation->status = $request->status ?? 'مكتمل';
+        $donation->save();
+
+        return response()->json([
+            'message' => 'Status updated successfully',
+            'donation' => $donation
+        ]);
+    }
+
+    // ✅ حذف التبرع
+    public function destroy($id)
+    {
+        $donation = Donation::findOrFail($id);
+        $donation->delete();
+
+        return response()->json([
+            'message' => 'Donation deleted successfully'
+        ]);
     }
 }

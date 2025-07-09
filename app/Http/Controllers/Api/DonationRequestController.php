@@ -14,7 +14,6 @@ class DonationRequestController extends Controller
     {
         $query = DonationRequest::query();
 
-        //(Pending / Approved / Rejected)
         if ($request->has('status')) {
             $query->where('status', $request->status);
         }
@@ -66,14 +65,14 @@ class DonationRequestController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:Pending,Approved,Rejected',
+            'status' => 'required|in:Pending,Approved,Rejected,Received',
         ]);
 
         $donation = DonationRequest::findOrFail($id);
         $donation->status = $request->status;
         $donation->save();
 
-        if ($donation->status === 'Approved' && $donation->user->fcm_token) {
+        if ($donation->status === 'Received' && $donation->user->fcm_token) {
             $donation->user->notify(new DonationApprovedNotification());
         }
 
@@ -83,7 +82,6 @@ class DonationRequestController extends Controller
         ]);
     }
 
-    // ✅ جديد : show()
     public function show($id)
     {
         $request = DonationRequest::find($id);
@@ -97,6 +95,16 @@ class DonationRequestController extends Controller
         return response()->json([
             'message' => 'Donation request fetched successfully',
             'data' => $request
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $request = DonationRequest::findOrFail($id);
+        $request->delete();
+
+        return response()->json([
+            'message' => 'Donation request deleted successfully'
         ]);
     }
 }

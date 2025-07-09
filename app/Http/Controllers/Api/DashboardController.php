@@ -6,19 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Donation;
 
-
 class DashboardController extends Controller
 {
-       public function index(Request $request)
-{
-    $user = $request->user();
+    public function index(Request $request)
+    {
+        $user = $request->user();
 
         if ($user->role === 'org') {
             $status = [
                 'total'    => Donation::count(),
                 'accepted' => Donation::where('status', 'مقبول')->count(),
                 'pending'  => Donation::where('status', 'قيد المراجعة')->count(),
-                'messages' => 3 // يمكنك تعديلها لاحقًا
+                'messages' => 3 // مثال فقط
             ];
 
             $recent = Donation::latest()->take(5)->get()->map(function ($d) {
@@ -54,12 +53,11 @@ class DashboardController extends Controller
             });
 
             return response()->json([
-                'status'     => $status,
+                'status'    => $status,
                 'donations' => $formatted,
             ]);
         }
 
         return response()->json(['message' => 'غير مصرح'], 403);
-}
-
+    }
 }
